@@ -1,7 +1,6 @@
-import { tableElement } from '#client/modules/settings.js';
-import { currentClickHandler } from './current-click-handler.js';
-import { donorClickHandler } from './donor-click-handler.js';
-import { removeDragHandlers } from './drag-drop-handler.js';
+import { onCurrentClick } from './on-current-click.js';
+import { onDonorClick } from './on-donor-click.js';
+import { unbindOnDragDrop } from './on-drag-drop.js';
 
 /**
  * Удаление карты с обработчиками
@@ -9,8 +8,8 @@ import { removeDragHandlers } from './drag-drop-handler.js';
  * @type {(cardElement: HTMLElement) => void}
  */
 export function removeCard(cardElement) {
-	cardElement.removeEventListener('click', currentClickHandler);
-	cardElement.removeEventListener('click', donorClickHandler);
-	removeDragHandlers(cardElement);
-	tableElement.removeChild(cardElement);
+	cardElement.removeEventListener('click', onCurrentClick);
+	cardElement.removeEventListener('click', onDonorClick);
+	unbindOnDragDrop(cardElement);
+	cardElement.remove();
 }

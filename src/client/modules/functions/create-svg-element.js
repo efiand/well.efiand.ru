@@ -1,13 +1,20 @@
 /**
  * Генерация SVG с использование символьного спрайта
  *
- * @type {(symbolId: string) => SVGSVGElement}
+ * @type {(symbolId: string, title?: string) => SVGSVGElement}
  */
-export function createSVG(symbolId) {
+export function createSvgElement(symbolId, title) {
 	const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 	const useElement = document.createElementNS('http://www.w3.org/2000/svg', 'use');
 
 	useElement.setAttributeNS('http://www.w3.org/1999/xlink', 'href', `#${symbolId}`);
-	svgElement.appendChild(useElement);
+	svgElement.append(useElement);
+
+	if (title) {
+		const titleElement = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+		titleElement.textContent = title;
+		svgElement.prepend(titleElement);
+	}
+
 	return svgElement;
 }

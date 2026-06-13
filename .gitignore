@@ -8,3 +8,4 @@ Thumbs.db
 node_modules
 public/*.html
 public/*.xml
+tmp/

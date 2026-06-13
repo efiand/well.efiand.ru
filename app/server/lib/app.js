@@ -29,8 +29,23 @@ async function next(req, res) {
 	res.end(template.trim());
 }
 
-/** @type {(middleware?: ServerMiddleware) => import("node:http").Server} */
-export function createApp(middleware) {
+/** @type {(server?: import("node:http").Server) => string} */
+export function getAppHost(server) {
+	if (!server) {
+		throw new Error('Сервер не запущен');
+	}
+
+	const address = server.address();
+
+	if (!address || typeof address === 'string') {
+		throw new Error('Сервер не слушает порт');
+	}
+
+	return `http://localhost:${address.port}`;
+}
+
+/** @type {(options?: CreateAppOptions) => import("node:http").Server} */
+export function createApp({ isQuiet = false, middleware, port: listenPort = port } = {}) {
 	const server = createServer((req, res) => {
 		if (middleware) {
 			middleware(req, res, next);
@@ -39,8 +54,10 @@ export function createApp(middleware) {
 		}
 	});
 
-	server.listen(port, 'localhost', () => {
-		log.info(`✅ Сервер запущен по адресу: ${host}`);
+	server.listen(listenPort, 'localhost', () => {
+		if (!isQuiet) {
+			log.info(`✅ Сервер запущен по адресу: ${host}`);
+		}
 	});
 
 	return server;
@@ -57,4 +74,20 @@ export async function closeApp(server) {
 	} catch (error) {
 		log.error('❌ [CLOSING ERROR]', error);
 	}
+}
+
+/**
+ * Ждёт, пока сервер откроет порт и начнёт принимать запросы.
+ *
+ * @type {(server: import("node:http").Server) => Promise<void>}
+ */
+export async function waitForApp(server) {
+	if (server.listening) {
+		return;
+	}
+
+	await new Promise((resolve, reject) => {
+		server.once('listening', resolve);
+		server.once('error', reject);
+	});
 }

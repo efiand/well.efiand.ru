@@ -1,13 +1,14 @@
 /**
  * Базовая функция логирования
- * @param {(...data: unknown[]) => void} log
- * @param {'ERROR' | 'INFO' | 'WARN'} levelTitle
- * @param {unknown[]} args
+ *
+ * @type {(log: (...data: unknown[]) => void, levelTitle: 'ERROR' | 'INFO' | 'WARN', ...args: unknown[]) => void}
  */
 function executeLog(log, levelTitle, ...args) {
-	const separator = `─`.repeat(40);
+	const dashSide = 10;
+	const header = `[${levelTitle} | ${new Date().toISOString()}]`;
+	const topLine = `${'─'.repeat(dashSide)} ${header} ${'─'.repeat(dashSide)}`;
 
-	log(`${separator} [${levelTitle} | ${new Date().toISOString()}]`);
+	log(topLine);
 
 	args.forEach((arg) => {
 		if ((levelTitle === 'ERROR' || levelTitle === 'WARN') && arg instanceof Error) {
@@ -17,7 +18,7 @@ function executeLog(log, levelTitle, ...args) {
 		}
 	});
 
-	log(separator);
+	log('─'.repeat(topLine.length));
 }
 
 /** @type {Record<LogLevel, (...args: unknown[]) => void>} */

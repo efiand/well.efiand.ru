@@ -7,7 +7,7 @@ export const mainRoute = {
 		return {
 			page: {
 				headTemplate: /* html */ `<meta name="yandex-verification" content="6891d630ad9271e6">`,
-				pageTemplate: RULES_TEMPLATE + TABLE_TEMPLATE,
+				pageTemplate: `${RULES_TEMPLATE}${TABLE_TEMPLATE}`,
 			},
 		};
 	},

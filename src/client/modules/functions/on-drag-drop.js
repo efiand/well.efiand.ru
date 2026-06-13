@@ -1,19 +1,19 @@
 import { clearShadows } from '#client/modules/functions/clear-shadows.js';
+import { evaluateDrop } from '#client/modules/functions/evaluate-drop.js';
 import { showWinMessage } from '#client/modules/functions/show-win-message.js';
-import { baseLeft, dropTargetOptions, reloadButttonElement, tableElement } from '#client/modules/settings.js';
-import { MAX_ATTACHED, STATE } from '#client/modules/state.js';
+import { baseLeft, dropTargetOptions, reloadButtonElement, tableElement } from '#client/modules/settings.js';
+import { MAX_ATTACHED, state } from '#client/modules/state.js';
 
-const THIRTEENTH_CARD = 13;
 const CONTROLS_COUNT = 8;
 
 class Coords {
 	/**
-	 * @param {number} x - Координата по оси X
-	 * @param {number} y - Координата по оси Y
+	 * @param {number} clientX - Координата указателя по оси X
+	 * @param {number} clientY - Координата указателя по оси Y
 	 */
-	constructor(x, y) {
-		this.x = x;
-		this.y = y;
+	constructor(clientX, clientY) {
+		this.clientX = clientX;
+		this.clientY = clientY;
 	}
 }
 
@@ -22,10 +22,10 @@ class Coords {
  *
  * @type {(cardElement: HTMLElement) => void}
  */
-export function addDragHandlers(cardElement) {
+export function bindOnDragDrop(cardElement) {
 	cardElement.classList.add('card--draggable');
-	cardElement.addEventListener('mousedown', dragDropHandler);
-	cardElement.addEventListener('touchstart', dragDropHandler, { passive: false });
+	cardElement.addEventListener('mousedown', onDragDrop);
+	cardElement.addEventListener('touchstart', onDragDrop, { passive: false });
 }
 
 /**
@@ -33,7 +33,7 @@ export function addDragHandlers(cardElement) {
  *
  * @type {(event: MouseEvent | TouchEvent) => void}
  */
-export function dragDropHandler(event) {
+export function onDragDrop(event) {
 	event.preventDefault();
 
 	const cardElement = /** @type {HTMLElement} */ (event.currentTarget);
@@ -52,10 +52,10 @@ export function dragDropHandler(event) {
 	/** @type {string | null} */
 	let newDataAccept = null;
 
+	let isAccepted = false;
 	let isCorner = false;
-	let isTrueAccept = false;
 
-	tableElement.appendChild(cardElement);
+	tableElement.append(cardElement);
 
 	// Тень
 	cardElement.classList.add('card--pulled');
@@ -63,30 +63,29 @@ export function dragDropHandler(event) {
 	// Добавление обработчиков перемещения мышью либо тачем
 	//@ts-expect-error
 	if (event.changedTouches?.[0]) {
-		document.addEventListener('touchmove', moveHandler, { passive: false });
-		document.addEventListener('touchend', upHandler, { passive: false });
+		document.addEventListener('touchmove', onMove, { passive: false });
+		document.addEventListener('touchend', onUp, { passive: false });
 	} else {
-		document.addEventListener('mousemove', moveHandler);
-		document.addEventListener('mouseup', upHandler);
+		document.addEventListener('mousemove', onMove);
+		document.addEventListener('mouseup', onUp);
 	}
 
 	/** @type {(moveEvent: MouseEvent | TouchEvent) => void} */
-	function moveHandler(moveEvent) {
+	function onMove(moveEvent) {
 		moveEvent.preventDefault();
 
 		// @ts-expect-error
 		const coordBase = moveEvent.changedTouches?.[0] || moveEvent;
-		const x = coordBase.clientX;
-		const y = coordBase.clientY;
+		const { clientX, clientY } = coordBase;
 
-		isTrueAccept = false;
-		const diffCoords = new Coords(startCoords.x - x, startCoords.y - y);
+		isAccepted = false;
+		const diffCoords = new Coords(startCoords.clientX - clientX, startCoords.clientY - clientY);
 
-		startCoords.x = x;
-		startCoords.y = y;
+		startCoords.clientX = clientX;
+		startCoords.clientY = clientY;
 
-		const currentLeft = cardElement.offsetLeft - diffCoords.x;
-		const currentTop = cardElement.offsetTop - diffCoords.y;
+		const currentLeft = cardElement.offsetLeft - diffCoords.clientX;
+		const currentTop = cardElement.offsetTop - diffCoords.clientY;
 
 		cardElement.style.left = `${currentLeft}px`;
 		cardElement.style.top = `${currentTop}px`;
@@ -94,11 +93,11 @@ export function dragDropHandler(event) {
 		clearShadows();
 
 		// Поиск доступного слота
-		const targetClass = STATE.dropTargets.filter(
+		const [targetClass] = state.dropTargets.filter(
 			(item) =>
 				Math.abs(currentLeft + baseLeft - dropTargetOptions[item].left) < cardElement.clientWidth &&
 				Math.abs(currentTop - dropTargetOptions[item].top) < cardElement.clientHeight,
-		)[0];
+		);
 
 		// Если карта пролетает над целевой ячейкой
 		if (targetClass) {
@@ -107,72 +106,54 @@ export function dragDropHandler(event) {
 			targetElement = targetElements[targetElements.length - 1];
 
 			const [dataAcceptType, dataAcceptIndex] = (targetElement.getAttribute('data-accept') || 'any-0').split('-');
-
-			/** Проверка слота-акцептора по масти */
-			const isTrueSuit = dataAcceptType === 'any' || dataAcceptType === dataCardType;
-
-			// Разница между стоимостью карт и проверка по стоимости
 			const cardValue = parseInt(dataCardIndex, 10);
 			const acceptValue = parseInt(dataAcceptIndex, 10);
-			const valueDiff = cardValue - acceptValue;
-			let isTrueValue = !acceptValue || !valueDiff;
 
-			// Другие условия по стоимости для углового слота
 			isCorner = targetElement.className.indexOf('corner') > -1;
-			if (isCorner) {
-				isTrueValue = !valueDiff;
 
-				// Если раскладка масти в углу началась, слот недоступен для этой масти
-				if (
-					dataAcceptType === 'any' &&
-					dataAcceptIndex === `${THIRTEENTH_CARD}` &&
-					STATE.cornerSuits.indexOf(dataCardType) > -1
-				) {
-					isTrueValue = false;
-				}
-			}
+			const dropResult = evaluateDrop({
+				acceptIndex: acceptValue,
+				acceptType: dataAcceptType,
+				cardIndex: cardValue,
+				cardType: dataCardType,
+				cornerSuits: state.cornerSuits,
+				isCorner,
+			});
 
-			// Итоговое условие доступности слота
-			if (isTrueSuit && isTrueValue) {
-				isTrueAccept = true;
+			if (dropResult.isAccepted) {
+				isAccepted = true;
 				targetElement.classList.add('card--acceptable');
-
-				// Формулировка требований для следующей карты
-				let newAcceptValue = cardValue !== THIRTEENTH_CARD ? cardValue + 1 : 1;
-				if (isCorner) {
-					newAcceptValue = cardValue !== 1 ? cardValue - 1 : THIRTEENTH_CARD;
-				}
-				newDataAccept = `${dataCardType}-${newAcceptValue.toString()}`;
+				newDataAccept = dropResult.newDataAccept ?? null;
 			}
 		}
 	}
 
 	/** @type {(upEvent: MouseEvent | TouchEvent) => void} */
-	function upHandler(upEvent) {
+	function onUp(upEvent) {
 		upEvent.preventDefault();
 
-		document.removeEventListener('mousemove', moveHandler);
-		document.removeEventListener('touchmove', moveHandler);
-		document.removeEventListener('mouseup', upHandler);
-		document.removeEventListener('touchend', upHandler);
+		document.removeEventListener('mousemove', onMove);
+		document.removeEventListener('touchmove', onMove);
+		document.removeEventListener('mouseup', onUp);
+		document.removeEventListener('touchend', onUp);
 
 		// Если карта отпущена над целевой ячейкой
-		if (isTrueAccept && targetElement) {
+		if (isAccepted && targetElement) {
 			cardElement.style.left = targetElement.style.left;
 			cardElement.style.top = targetElement.style.top;
 			cardElement.className = targetElement.className;
 			cardElement.classList.remove('card--empty');
 			cardElement.classList.remove('card--acceptable');
 			if (cardElement.className.indexOf('corner') > -1) {
-				STATE.numberOfAttached++;
-				removeDragHandlers(cardElement);
-				if (STATE.cornerSuits.indexOf(dataCardType) === -1) {
-					STATE.cornerSuits.push(dataCardType);
+				state.numberOfAttached++;
+				unbindOnDragDrop(cardElement);
+				if (state.cornerSuits.indexOf(dataCardType) === -1) {
+					state.cornerSuits.push(dataCardType);
 				}
 			} else {
 				cardElement.classList.add('card--draggable');
 			}
-			if (STATE.numberOfAttached === MAX_ATTACHED) {
+			if (state.numberOfAttached === MAX_ATTACHED) {
 				showWinMessage();
 			}
 			if (newDataAccept) {
@@ -192,8 +173,8 @@ export function dragDropHandler(event) {
 
 		// Если в раскладе пусто, деактивируем кнопку повторного расклада
 		if (tableElement.querySelectorAll('.card--control').length < CONTROLS_COUNT) {
-			reloadButttonElement.setAttribute('disabled', 'disabled');
-			reloadButttonElement.title = 'Раскладывать нечего :-(';
+			reloadButtonElement.setAttribute('disabled', 'disabled');
+			reloadButtonElement.title = 'Раскладывать нечего ☹';
 		}
 	}
 }
@@ -203,8 +184,8 @@ export function dragDropHandler(event) {
  *
  * @type {(cardElement: HTMLElement) => void}
  */
-export function removeDragHandlers(cardElement) {
+export function unbindOnDragDrop(cardElement) {
 	cardElement.classList.remove('card--draggable');
-	cardElement.removeEventListener('mousedown', dragDropHandler);
-	cardElement.removeEventListener('touchstart', dragDropHandler);
+	cardElement.removeEventListener('mousedown', onDragDrop);
+	cardElement.removeEventListener('touchstart', onDragDrop);
 }

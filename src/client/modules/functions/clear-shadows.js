@@ -1,12 +1,12 @@
 import { tableElement } from '#client/modules/settings.js';
-import { STATE } from '#client/modules/state.js';
+import { state } from '#client/modules/state.js';
 
 /** Очистка теней */
 export function clearShadows() {
-	for (let i = 0; i < STATE.dropTargets.length; i++) {
-		const elements = tableElement.querySelectorAll(`.card--${STATE.dropTargets[i]}`);
-		for (let j = 0; j < elements.length; j++) {
-			elements[j].classList.remove('card--acceptable');
+	for (let i = 0; i < state.dropTargets.length; i++) {
+		const slotElements = tableElement.querySelectorAll(`.card--${state.dropTargets[i]}`);
+		for (let j = 0; j < slotElements.length; j++) {
+			slotElements[j].classList.remove('card--acceptable');
 		}
 	}
 }

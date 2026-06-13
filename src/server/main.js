@@ -37,32 +37,34 @@ function getStaticDir(pathname) {
 	return './public';
 }
 
-createApp(async (req, res, next) => {
-	if (isDev && req.url === '/dev/watch') {
-		sendReload(res);
-		return;
-	}
+createApp({
+	middleware: async (req, res, next) => {
+		if (isDev && req.url === '/dev/watch') {
+			sendReload(res);
+			return;
+		}
 
-	const { pathname } = new URL(`${host}${req.url}`);
-	if (pathname === '/.well-known/appspecific/com.chrome.devtools.json') {
-		res.setHeader('Content-Type', 'application/json');
-		res.end('{}');
-		return;
-	}
+		const { pathname } = new URL(`${host}${req.url}`);
+		if (pathname === '/.well-known/appspecific/com.chrome.devtools.json') {
+			res.setHeader('Content-Type', 'application/json');
+			res.end('{}');
+			return;
+		}
 
-	const ext = path.extname(pathname);
-	if (!staticExtensions.has(ext)) {
-		next?.(req, res);
-		return;
-	}
+		const ext = path.extname(pathname);
+		if (!staticExtensions.has(ext)) {
+			next?.(req, res);
+			return;
+		}
 
-	try {
-		const filePath = path.join(process.cwd(), getStaticDir(pathname), pathname);
-		await access(filePath);
-		res.writeHead(200, { 'Content-Type': STATIC_MIME_TYPES[ext] });
-		createReadStream(filePath).pipe(res);
-	} catch (error) {
-		console.error(error);
-		next?.(req, res);
-	}
+		try {
+			const filePath = path.join(process.cwd(), getStaticDir(pathname), pathname);
+			await access(filePath);
+			res.writeHead(200, { 'Content-Type': STATIC_MIME_TYPES[ext] });
+			createReadStream(filePath).pipe(res);
+		} catch (error) {
+			console.error(error);
+			next?.(req, res);
+		}
+	},
 });

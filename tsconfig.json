@@ -13,6 +13,7 @@
 			"#server/*": ["./app/server/*"]
 		},
 		"resolveJsonModule": true,
+		"skipLibCheck": true,
 		"strict": true,
 		"target": "es2022"
 	},

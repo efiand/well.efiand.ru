@@ -1,6 +1,12 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
 declare global {
+	type CreateAppOptions = {
+		isQuiet?: boolean;
+		middleware?: ServerMiddleware;
+		port?: number;
+	};
+
 	type Route = Record<string, RouteMethod>;
 
 	type RouteData = {

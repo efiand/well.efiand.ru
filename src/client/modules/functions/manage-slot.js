@@ -12,6 +12,6 @@ export function manageSlot(runCardElements, index, slotNumber) {
 		runCardElements[index].classList.remove('card--run');
 		runCardElements[index].classList.remove('card--shirt');
 		runCardElements[index].classList.add(`card--work-${slotNumber}`);
-		tableElement.appendChild(runCardElements[index]);
+		tableElement.append(runCardElements[index]);
 	}, slotNumber * COEFF);
 }

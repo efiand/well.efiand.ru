@@ -53,7 +53,7 @@ export async function renderPage({ headTemplate = '', pageTemplate = '' }) {
 				<div hidden>${SPRITE_TEMPLATE}</div>
 
 				<main>${pageTemplate}</main>
-      	${isDev ? '' : YANDEX_METRIKA_TEMPLATE}
+				${isDev ? '' : YANDEX_METRIKA_TEMPLATE}
 			</body>
 		</html>
 	`;

@@ -2,7 +2,7 @@ export const MAX_ATTACHED = 104;
 
 export const NUMBER_OF_SLOTS = 5;
 
-export const STATE = {
+export const state = {
 	/**
 	 * Список мастей, которые начали собирать
 	 *

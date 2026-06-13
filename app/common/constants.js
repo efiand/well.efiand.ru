@@ -1,3 +1,5 @@
+export const ALL_PAGES = ['/'];
+
 export const BASE_URL = 'https://well.efiand.ru';
 
 /** @type {Record<string, string>} */

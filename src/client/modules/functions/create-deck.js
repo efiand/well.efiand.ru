@@ -1,9 +1,9 @@
-import { createSVG } from '#client/modules/functions/create-svg.js';
-import { currentClickHandler } from '#client/modules/functions/current-click-handler.js';
-import { donorClickHandler } from '#client/modules/functions/donor-click-handler.js';
-import { addDragHandlers } from '#client/modules/functions/drag-drop-handler.js';
+import { createSvgElement } from '#client/modules/functions/create-svg-element.js';
+import { onCurrentClick } from '#client/modules/functions/on-current-click.js';
+import { onDonorClick } from '#client/modules/functions/on-donor-click.js';
+import { bindOnDragDrop } from '#client/modules/functions/on-drag-drop.js';
 import { deckComponents, tableElement } from '#client/modules/settings.js';
-import { STATE } from '#client/modules/state.js';
+import { state } from '#client/modules/state.js';
 import { shuffleArray } from '#common/lib/shuffle-array.js';
 
 const Count = {
@@ -14,7 +14,7 @@ const Count = {
 	TWO_DECKS: 22,
 };
 
-/** Генерация разметки карт */
+/** Генерация и раскладка 104 карт на игровом поле */
 export function createDeck() {
 	/** Удвоенная колода */
 	const cards = deckComponents.concat(deckComponents);
@@ -22,10 +22,11 @@ export function createDeck() {
 	// Тасуем удвоенную колоду
 	shuffleArray(cards);
 
-	const deck = document.createDocumentFragment();
+	const deckFragment = document.createDocumentFragment();
 	for (let i = 0; i < cards.length; i++) {
-		const [cardType, cardIndex] = cards[i].split('-');
-		const btn = document.createElement('div');
+		const cardId = cards[i];
+		const [cardType, cardIndex] = cardId.split('-');
+		const buttonElement = document.createElement('div');
 
 		// Раскладываем по 11 карт по стенкам колодца, остальные в колоду
 		let suffix = 'control card--run';
@@ -39,46 +40,43 @@ export function createDeck() {
 			suffix = 'donor-bottom';
 		}
 
-		// Классы и дата-атрибуты карт (IE-совместимый синтаксис)
-		btn.setAttribute('class', `card card--${suffix} card--shirt card--${cardType}`);
-		btn.setAttribute('data-card', cards[i]);
+		buttonElement.className = `card card--${suffix} card--shirt card--${cardType}`;
+		buttonElement.dataset.card = cardId;
 
 		// Центральный контейнер
-		let SVG = createSVG(cards[i]);
-		SVG.setAttribute('class', 'card__info card__svg');
-		SVG.setAttribute('title', `${STATE.suits[cardType]}: ${STATE.names[cardIndex] || cardIndex}`);
-		btn.appendChild(SVG);
+		const svgElement = createSvgElement(cardId, `${state.suits[cardType]}: ${state.names[cardIndex] || cardIndex}`);
+		svgElement.classList.add('card__info', 'card__svg');
+		buttonElement.append(svgElement);
 
 		// Контейнер в левом верхнем углу
-		const block = document.createElement('span');
-		block.classList.add('card__corner');
-		block.classList.add(`card__corner--${cardType}`);
-		block.textContent = STATE.values[cardIndex] || cardIndex;
+		const cornerElement = document.createElement('span');
+		cornerElement.className = `card__corner card__corner--${cardType}`;
+		cornerElement.textContent = state.values[cardIndex] || cardIndex;
 
 		// Левый верхний угол
-		SVG = createSVG(cardType);
-		SVG.setAttribute('class', 'card__icon card__svg');
-		block.appendChild(SVG);
-		btn.appendChild(block);
+		const iconSvgElement = createSvgElement(cardType);
+		iconSvgElement.classList.add('card__icon', 'card__svg');
+		cornerElement.append(iconSvgElement);
+		buttonElement.append(cornerElement);
 
 		// Правый нижний угол
-		const blockCopy = block.cloneNode(true);
-		block.classList.add('card__corner--bottom');
-		btn.appendChild(blockCopy);
+		const bottomCornerElement = cornerElement.cloneNode(true);
+		cornerElement.classList.add('card__corner--bottom');
+		buttonElement.append(bottomCornerElement);
 
 		// Для крайней карты или карты по углам
 		if (i === Count.MAX) {
-			btn.addEventListener('click', currentClickHandler);
-			btn.setAttribute('title', `${STATE.willSlotsText}${STATE.numberOfSlots}`);
+			buttonElement.addEventListener('click', onCurrentClick);
+			buttonElement.title = `${state.willSlotsText}${state.numberOfSlots}`;
 		} else if (i < Count.FOUR_DECKS) {
-			btn.addEventListener('click', donorClickHandler);
+			buttonElement.addEventListener('click', onDonorClick);
 		} else {
-			addDragHandlers(btn);
+			bindOnDragDrop(buttonElement);
 		}
 
 		// Добавление к колоде
-		deck.appendChild(btn);
+		deckFragment.append(buttonElement);
 	}
 
-	tableElement.appendChild(deck);
+	tableElement.append(deckFragment);
 }

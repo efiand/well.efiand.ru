@@ -3,31 +3,32 @@ import { createDeck } from '#client/modules/functions/create-deck.js';
 import { removeCard } from '#client/modules/functions/remove-card.js';
 import {
 	closeButtonElement,
-	reloadButttonElement,
+	reloadButtonElement,
 	restartButtonElement,
 	rulesElement,
 	tableElement,
 	winMessageElement,
 } from '#client/modules/settings.js';
-import { NUMBER_OF_SLOTS, STATE } from '#client/modules/state.js';
+import { NUMBER_OF_SLOTS, state } from '#client/modules/state.js';
 
 const TIMEOUT = 300;
 
+/** Закрытие модального окна с правилами */
 export function closeRules() {
 	rulesElement.hidden = true;
 	if (window.location.hash) {
-		history.replaceState(null, '', window.location.pathname + window.location.search);
+		history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
 	}
 }
 
 /** Перезапуск игры со сменой колоды */
-export function restartHandler() {
+export function onRestart() {
 	clearShadows();
 
 	// Обновляем количество слотов, количество окончательно собранных карт и отсчет формирования колод
-	STATE.numberOfSlots = NUMBER_OF_SLOTS;
-	STATE.numberOfAttached = 0;
-	STATE.cornerSuits = [];
+	state.numberOfSlots = NUMBER_OF_SLOTS;
+	state.numberOfAttached = 0;
+	state.cornerSuits = [];
 
 	/** @type {NodeListOf<HTMLElement>} */
 	const existsCardElements = tableElement.querySelectorAll('[data-card]');
@@ -38,7 +39,7 @@ export function restartHandler() {
 		}
 	}
 
-	// Закрываем меню
+	// Закрываем меню правил и сообщение о победе
 	winMessageElement.hidden = true;
 	closeRules();
 	closeButtonElement.hidden = false;
@@ -47,11 +48,11 @@ export function restartHandler() {
 	window.setTimeout(createDeck, TIMEOUT);
 
 	// Меняем текст кнопки
-	restartButtonElement.textContent = STATE.restartText;
+	restartButtonElement.textContent = state.restartText;
 
 	// Активируем кнопку расклада (на случай деактивации в предыдущем сеансе игры)
-	reloadButttonElement.removeAttribute('disabled');
+	reloadButtonElement.removeAttribute('disabled');
 
 	// Обновляем title кнопки расклада
-	reloadButttonElement.title = `${STATE.reloadTitle} ${STATE.numberOfSlots - 1} ${STATE.reloadPlural}`;
+	reloadButtonElement.title = `${state.reloadTitle} ${state.numberOfSlots - 1} ${state.reloadPlural}`;
 }

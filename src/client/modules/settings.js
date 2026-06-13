@@ -14,7 +14,7 @@ export const restartButtonElement = /** @type {HTMLElement} */ (rulesElement.que
 export const winMessageElement = /** @type {HTMLElement} */ (rulesElement.querySelector('.rules__win'));
 
 /** Кнопка сдачи карт  */
-export const reloadButttonElement = /** @type {HTMLElement} */ (tableElement.querySelector('.card--reload'));
+export const reloadButtonElement = /** @type {HTMLElement} */ (tableElement.querySelector('.card--reload'));
 
 /** Кнопка открытия модального окна */
 export const rulesOpenerElement = /** @type {HTMLElement} */ (tableElement.querySelector('.table__rules-opener'));

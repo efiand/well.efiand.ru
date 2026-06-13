@@ -1,0 +1,14 @@
+---
+description: Организация и написание тестов
+alwaysApply: true
+---
+
+# Тестирование
+
+- Runner: `node --test --test-isolation=process "test/**/*.spec.js"`, перед тестами — `npm run build`.
+- Spec-файлы зеркалят слои приложения: `test/lib/` → `app/common/lib/`, `test/server/` → `app/server/lib/`, `test/templates/`, `test/routes/`, `test/integration/`, `test/client/`.
+- Каждый слой проверяет свой уровень: утилиты и шаблоны — напрямую, маршруты — через `GET` хендлера, integration — сквозно через HTTP (BEM, HTML, контент страниц).
+- Одна и та же проверка не дублируется в разных spec-файлах: например, валидность sitemap — только в `test/routes/`, не в integration.
+- Хелпер `test/_helpers/route-params.js` — параметры для вызова роут-хендлеров.
+- Клиент — через `happy-dom`, хелпер `test/_helpers/dom-fixture.js`.
+- Сервер в integration-тестах: `createApp({ isQuiet: true, port: 0 })`, `waitForApp(server)` в `before`, `closeApp(server)` в `after`; URL — `getAppHost(server)`.

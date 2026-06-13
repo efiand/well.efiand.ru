@@ -5,7 +5,7 @@ import { rulesElement } from '#client/modules/settings.js';
  *
  * @type {(event: PointerEvent) => void}
  */
-export function rulesOpenHandler(event) {
+export function onRulesOpen(event) {
 	event.preventDefault();
 
 	rulesElement.hidden = false;

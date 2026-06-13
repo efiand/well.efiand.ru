@@ -11,10 +11,15 @@ const MINIFIER_CONFIG = {
 	removeEmptyAttributes: true,
 };
 
-/** @type {(html: string, config?: import("html-minifier-terser").Options) => Promise<string>} */
+/**
+ * Минификация HTML для production-сборки.
+ *
+ * После минификации принудительно добавляет кавычки вокруг шаблонных литералов.
+ *
+ * @type {(html: string, config?: import("html-minifier-terser").Options) => Promise<string>}
+ */
 export async function minifyHtml(html, config = {}) {
 	const minifiedHtml = await htmlMinifier.minify(html, { ...MINIFIER_CONFIG, ...config });
 
-	// Принудительно добавляем кавычки вокруг шаблонных литералов
 	return minifiedHtml.replace(/=(\$\{.*?\})/g, '="$1"');
 }
