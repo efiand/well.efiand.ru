@@ -1,0 +1,29 @@
+---
+description: well.efiand.ru — политика конфиденциальности (inline)
+alwaysApply: true
+---
+
+# well.efiand.ru — политика конфиденциальности
+
+Общая структура §1–§10 — [`.cursor/rules/site-core/privacy-core.mdc`](site-core/privacy-core.mdc). Ниже — только дополнения для well.
+
+## Контент
+
+- Текст политики — inline в [`app/common/templates/rules.js`](app/common/templates/rules.js), якорь `#privacy`
+- Дата редакции — `privacyRevisionDate` в [`configure-site.js`](app/common/configure-site.js)
+- Отдельного роута `/privacy` **нет** — `registerPrivacyRouteTests` не используем
+- Ссылка из cookie-баннера — `cookieConsent.privacyHref: '/#privacy'` в [`configure-site.js`](app/common/configure-site.js)
+
+## Cookie / Metrika
+
+- SSR — core `renderCookieConsent`; pill — `renderCookieConsentSettingsControl` в footer `rules.js`
+- Client — [`configure-site.js`](app/common/configure-site.js): `setSiteConfig` + `initSiteClient()` → `initCookieConsent` → gated `initYandexMetrika`
+- [`src/client/entries/main.js`](src/client/entries/main.js) импортирует **только** `#common/configure-site.js` и игровую логику (без прямого `initYandexMetrika`)
+- В dev `setSiteConfig` обнуляет `yandexMetrikaId` — баннер и счётчик не активны
+- Формулировки §4 — как у [`initYandexMetrika`](../../site-core/client/lib/init-yandex-metrika.js) (дефолты core: clickmap, webvisor)
+
+## Тесты
+
+- [`test/templates/rules.spec.js`](test/templates/rules.spec.js) — разметка блока политики
+- [`test/integration/validate.spec.js`](test/integration/validate.spec.js) — `#privacy` на главной
+- [`test/server/page.spec.js`](test/server/page.spec.js) — cookie-баннер, `href="/#privacy"`, gated Metrika

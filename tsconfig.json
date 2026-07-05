@@ -1,22 +1,27 @@
 {
 	"compilerOptions": {
-		"allowJs": true,
-		"checkJs": true,
-		"lib": ["DOM", "ES2022"],
-		"module": "nodenext",
-		"moduleResolution": "nodenext",
-		"noEmit": true,
-		"noImplicitAny": true,
 		"paths": {
 			"#client/*": ["./src/client/*"],
 			"#common/*": ["./app/common/*"],
+			"#core/client/*": ["./node_modules/site-core/client/*"],
+			"#core/common/*": ["./node_modules/site-core/common/*"],
+			"#core/config/*": ["./node_modules/site-core/config/*"],
+			"#core/server/*": ["./node_modules/site-core/server/*"],
+			"#core/test-helpers/*": ["./node_modules/site-core/test-helpers/*"],
 			"#server/*": ["./app/server/*"]
 		},
-		"resolveJsonModule": true,
-		"skipLibCheck": true,
-		"strict": true,
-		"target": "es2022"
+		"typeRoots": ["./node_modules/@types", "./node_modules/site-core/node_modules/@types"],
+		"types": ["node"]
 	},
-	"exclude": ["public"],
-	"typeRoots": ["./src/types"]
+	"extends": [
+		"./node_modules/site-core/config/tsconfig.base.json",
+		"./node_modules/site-core/config/tsconfig.host.json"
+	],
+	"include": [
+		"app/**/*.js",
+		"src/**/*.js",
+		"src/types/**/*.d.ts",
+		"test/**/*.js",
+		"node_modules/site-core/types/index.d.ts"
+	]
 }

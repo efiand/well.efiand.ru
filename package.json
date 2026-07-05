@@ -1,47 +1,32 @@
 {
-	"devDependencies": {
-		"@biomejs/biome": "2.5.0",
-		"@fastify/pre-commit": "2.2.1",
-		"@types/html-minifier-terser": "7.0.2",
-		"@types/node": "25.9.3",
-		"@types/postcss-import": "14.0.3",
-		"@types/postcss-url": "10.0.4",
-		"cssnano": "8.0.2",
-		"fast-xml-validator": "1.1.1",
-		"happy-dom": "20.10.2",
-		"html-minifier-terser": "7.2.0",
-		"html-validate": "11.5.3",
-		"nodemon": "3.1.14",
-		"postcss": "8.5.15",
-		"postcss-cli": "11.0.1",
-		"postcss-import": "16.1.1",
-		"postcss-sort-media-queries": "6.6.2",
-		"postcss-url": "10.1.4",
-		"posthtml-bem-linter": "0.1.8",
-		"rolldown": "1.1.1",
-		"typescript": "6.0.3"
+	"dependencies": {
+		"site-core": "github:efiand/site-core#1.5.4"
 	},
 	"imports": {
 		"#client/*": "./src/client/*",
 		"#common/*": "./app/common/*",
+		"#core/client/*": "site-core/client/*",
+		"#core/common/*": "site-core/common/*",
+		"#core/config/*": "site-core/config/*",
+		"#core/server/*": "site-core/server/*",
+		"#core/test-helpers/*": "site-core/test-helpers/*",
 		"#server/*": "./app/server/*"
 	},
-	"main": "./app/server/main.js",
-	"name": "well.efiand.ru",
 	"pre-commit": [
 		"lint-format",
 		"test"
 	],
 	"private": true,
 	"scripts": {
-		"build": "node ./tools/build-static-pages.js",
-		"dev": "nodemon ./src/server/main.js",
-		"lint": "npm run type-check && biome check",
-		"lint-format": "npm run type-check && biome check --write",
-		"preview": "node ./src/server/main.js",
-		"test": "npm run build && node --test --test-isolation=process \"test/**/*.spec.js\"",
-		"type-check": "tsc -p ./tsconfig.json",
-		"upgrade": "node ./tools/upgrade.js"
+		"build": "site-core-build",
+		"dev": "site-core-dev",
+		"lint": "site-core-lint",
+		"lint-format": "site-core-lint --write",
+		"postinstall": "site-core-postinstall",
+		"preview": "site-core-dev --preview",
+		"test": "npm run build && site-core-run node --import site-core/tools/register-vendors.js --test --test-isolation=process \"test/**/*.spec.js\"",
+		"type-check": "site-core-type-check",
+		"upgrade": "site-core-upgrade"
 	},
 	"type": "module"
 }

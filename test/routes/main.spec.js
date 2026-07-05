@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
 import { RULES_TEMPLATE } from '#common/templates/rules.js';
 import { TABLE_TEMPLATE } from '#common/templates/table.js';
+import { createRouteParams } from '#core/test-helpers/route-params.js';
 import { mainRoute } from '#server/routes/main.js';
-import { createRouteParams } from '../_helpers/route-params.js';
 
 describe('Routes/Main', () => {
 	test('Returns rules and table templates with yandex verification meta', async () => {

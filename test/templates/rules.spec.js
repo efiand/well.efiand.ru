@@ -1,3 +1,4 @@
+import '#common/configure-site.js';
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
 import { RULES_TEMPLATE } from '#common/templates/rules.js';
@@ -16,6 +17,9 @@ describe('Templates/Rules', () => {
 	test('Includes privacy policy section', () => {
 		assert.match(RULES_TEMPLATE, /id="privacy"/);
 		assert.match(RULES_TEMPLATE, /Политика обработки персональных данных/);
-		assert.match(RULES_TEMPLATE, /Яндекс\.Метрика/);
+		assert.match(RULES_TEMPLATE, /152-ФЗ/);
+		assert.match(RULES_TEMPLATE, /cookie-баннер/);
+		assert.match(RULES_TEMPLATE, /карту кликов и запись сессий/);
+		assert.match(RULES_TEMPLATE, /data-cookie-consent-settings/);
 	});
 });

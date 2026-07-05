@@ -1,4 +1,12 @@
 {
+	"biome.lsp.bin": {
+		"darwin-arm64": "./node_modules/site-core/node_modules/@biomejs/cli-darwin-arm64/biome",
+		"darwin-x64": "./node_modules/site-core/node_modules/@biomejs/cli-darwin-x64/biome",
+		"linux-arm64": "./node_modules/site-core/node_modules/@biomejs/cli-linux-arm64/biome",
+		"linux-x64": "./node_modules/site-core/node_modules/@biomejs/cli-linux-x64/biome",
+		"win32-arm64": "./node_modules/site-core/node_modules/@biomejs/cli-win32-arm64/biome.exe",
+		"win32-x64": "./node_modules/site-core/node_modules/@biomejs/cli-win32-x64/biome.exe"
+	},
 	"biome.requireConfiguration": true,
 	"editor.codeActionsOnSave": {
 		"source.fixAll.biome": "explicit",
@@ -15,5 +23,8 @@
 	"emmet.preferences": {
 		"output.reverseAttributes": true
 	},
-	"prettier.enable": false
+	"prettier.enable": false,
+	"yaml.schemas": {
+		"./node_modules/site-core/config/github-workflow.schema.json": ".github/workflows/*.{yml,yaml}"
+	}
 }

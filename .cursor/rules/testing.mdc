@@ -1,14 +1,15 @@
 ---
-description: Организация и написание тестов
+description: well.efiand.ru — project-specific тесты
 alwaysApply: true
 ---
 
-# Тестирование
+# Тестирование well.efiand.ru
 
-- Runner: `node --test --test-isolation=process "test/**/*.spec.js"`, перед тестами — `npm run build`.
-- Spec-файлы зеркалят слои приложения: `test/lib/` → `app/common/lib/`, `test/server/` → `app/server/lib/`, `test/templates/`, `test/routes/`, `test/integration/`, `test/client/`.
-- Каждый слой проверяет свой уровень: утилиты и шаблоны — напрямую, маршруты — через `GET` хендлера, integration — сквозно через HTTP (BEM, HTML, контент страниц).
-- Одна и та же проверка не дублируется в разных spec-файлах: например, валидность sitemap — только в `test/routes/`, не в integration.
-- Хелпер `test/_helpers/route-params.js` — параметры для вызова роут-хендлеров.
-- Клиент — через `happy-dom`, хелпер `test/_helpers/dom-fixture.js`.
-- Сервер в integration-тестах: `createApp({ isQuiet: true, port: 0 })`, `waitForApp(server)` в `before`, `closeApp(server)` в `after`; URL — `getAppHost(server)`.
+Общая конвенция — [`testing-core.mdc`](site-core/testing-core.mdc).
+
+## Project-specific
+
+- **Игра** — `test/client/*.spec.js` (15 spec); DOM — [`test/_helpers/dom-fixture.js`](test/_helpers/dom-fixture.js) + `loadClientModules()`
+- **Шаблоны** — `test/templates/{rules,sprite,table}.spec.js`
+- **Inline SSR** — `test/server/page.spec.js`: `<style>`, `<script type="module">`, cookie-баннер, gated Metrika; `test/client/cookie-consent-reload.spec.js` — repeat-visit
+- **Integration** — `test/integration/validate.spec.js`: `useIntegrationFixture`, title «Колодец», `#privacy`, 404

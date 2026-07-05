@@ -1,7 +1,8 @@
 @import url("common/global.css");
 @import url("common/helpers.css");
 
-@import url("components/button.css");
-@import url("components/card.css");
-@import url("components/rules.css");
-@import url("components/table.css");
+@import url("blocks/button.css");
+@import url("blocks/card.css");
+@import url("blocks/cookie-consent.core.css");
+@import url("blocks/rules.css");
+@import url("blocks/table.css");

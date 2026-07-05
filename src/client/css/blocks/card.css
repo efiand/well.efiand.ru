@@ -6,7 +6,7 @@
 	padding: 0;
 	overflow: hidden;
 	color: transparent;
-	background-color: #ffffff;
+	background-color: var(--color-white);
 	border: none;
 	border-radius: 1vmin;
 	outline: none;
@@ -15,13 +15,19 @@
 
 .card--empty {
 	background-color: transparent;
-	border: 0.25vmin solid rgba(255, 255, 255, 0.1);
+	border: 0.25vmin solid color-mix(in srgb, var(--color-white) 10%, transparent);
 }
 
 .card--reload {
 	background-color: transparent;
-	background-image: radial-gradient(circle, transparent 20%, #ffffff 21%, #ffffff 30%, transparent 31%);
-	border: 0.25vmin solid #ffffff;
+	background-image: radial-gradient(
+		circle,
+		transparent 20%,
+		var(--color-white) 21%,
+		var(--color-white) 30%,
+		transparent 31%
+	);
+	border: 0.25vmin solid var(--color-white);
 	cursor: pointer;
 	opacity: 0.1;
 	transition: opacity 0.3s ease-in-out;
@@ -138,20 +144,20 @@
 	background-color: transparent;
 	background-image: linear-gradient(
 		transparent 33.33333%,
-		#ffffff 33.33333%,
-		#ffffff 40%,
+		var(--color-white) 33.33333%,
+		var(--color-white) 40%,
 		transparent 40%,
 		transparent 46.66666%,
-		#ffffff 46.66666%,
-		#ffffff 53.33333%,
+		var(--color-white) 46.66666%,
+		var(--color-white) 53.33333%,
 		transparent 53.33333%,
 		transparent 60%,
-		#ffffff 60%,
-		#ffffff 66.66666%,
+		var(--color-white) 60%,
+		var(--color-white) 66.66666%,
 		transparent 66.66666%
 	);
 	background-clip: content-box;
-	border: 0.25vmin solid #ffffff;
+	border: 0.25vmin solid var(--color-white);
 	cursor: pointer;
 	opacity: 0.1;
 	transition: var(--transition);
@@ -159,7 +165,7 @@
 }
 
 .card--pulled {
-	box-shadow: 0 0 4px 2px #00000080;
+	box-shadow: 0 0 4px 2px color-mix(in srgb, var(--color-black) 50%, transparent);
 }
 
 .card--acceptable {
@@ -197,7 +203,7 @@
 	height: 3vmin;
 	font-size: 1.5vmin;
 	text-align: center;
-	color: #000000;
+	color: var(--color-black);
 	pointer-events: none;
 }
 
@@ -221,7 +227,7 @@
 }
 
 .card--shirt {
-	background-color: #ffffff;
+	background-color: var(--color-white);
 	background-image:
 		repeating-linear-gradient(
 			to right bottom,
@@ -257,7 +263,7 @@
 			transparent 23%,
 			transparent 32%
 		);
-	border: 0.125vmin solid #ffffff;
+	border: 0.125vmin solid var(--color-white);
 	cursor: pointer;
 }
 

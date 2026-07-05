@@ -4,7 +4,7 @@ import { onDonorClick } from '#client/modules/functions/on-donor-click.js';
 import { bindOnDragDrop } from '#client/modules/functions/on-drag-drop.js';
 import { deckComponents, tableElement } from '#client/modules/settings.js';
 import { state } from '#client/modules/state.js';
-import { shuffleArray } from '#common/lib/shuffle-array.js';
+import { shuffleArray } from '#core/common/lib/shuffle-array.js';
 
 const Count = {
 	FOUR_DECKS: 44,

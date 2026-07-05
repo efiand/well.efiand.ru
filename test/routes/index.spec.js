@@ -5,6 +5,7 @@ import { routes } from '#server/routes/index.js';
 describe('Routes/Index', () => {
 	test('Registers all public routes', () => {
 		assert.ok(routes['/']?.GET);
+		assert.ok(routes['/404.html']?.GET);
 		assert.ok(routes['/sitemap.xml']?.GET);
 	});
 });

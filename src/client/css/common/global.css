@@ -1,4 +1,7 @@
 html {
+	--color-black: #000000;
+	--color-white: #ffffff;
+	--cookie-consent-z-index: 10;
 	--scroll-behavior: auto;
 	--transition: none;
 
@@ -21,10 +24,11 @@ body {
 	-webkit-tap-highlight-color: transparent;
 	background-color: #096312;
 }
-a {
+
+a,
+button {
 	color: inherit;
 	text-decoration-skip-ink: none;
-	outline: 0;
 	transition: var(--transition);
 	transition-property: color, opacity, background-color, border-color, box-shadow;
 }

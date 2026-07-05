@@ -1,25 +1,21 @@
 .button {
 	width: 100%;
 	padding: 1rem 2rem;
-	font-size: 1rem;
-	font-family: inherit;
+	font: inherit;
 	text-align: center;
 	text-decoration: none;
 	background-color: #999999;
 	border: none;
 	border-radius: 1.25rem;
-	outline: 0;
-	box-shadow: 0 2px 2px #000000b3;
+	box-shadow: 0 2px 2px color-mix(in srgb, var(--color-black) 70%, transparent);
 	cursor: pointer;
-	transition: var(--transition);
-	transition-property: color, background-color, box-shadow, opacity;
 	user-select: none;
 }
 
 @media (hover: hover) {
 	.button:focus,
 	.button:hover {
-		color: #ffffff;
+		color: var(--color-white);
 		background-color: #c42b16;
 		box-shadow: 0 2px 2px #c42b164d;
 	}

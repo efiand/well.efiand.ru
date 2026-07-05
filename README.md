@@ -9,17 +9,29 @@
 
 ## Для разработчика
 
-- Инструмент [aвтообновления зависимостей](tools/upgrade.js).
-- Перезагрузка страницы в браузере при перезагрузке сервера в режиме разработки с помощью Server Sent Events.
-- [Biome](https://biomejs.dev/) для проверки кода.
-- Node Test Runner для тестирования.
-- Автодеплой при пуше через github action по наличию фразы `[deploy]` в заголовке коммита.
+Инфраструктура, CLI, postinstall, CI — см. [README site-core](https://github.com/efiand/site-core).
+
+```bash
+npm install
+npm run dev
+npm test
+```
+
+## CI и deploy
+
+Push в `main`: lint + test; deploy на GitHub Pages по умолчанию после зелёного CI.
+
+| Маркер в commit message | CI | Deploy |
+| ----------------------- | -- | ------ |
+| *(нет)* | ✅ | ✅ |
+| `[no-deploy]` | ✅ | ❌ |
+| `[WIP]` | ✅ | ❌ |
+| `[skip` (`[skip ci]` …) | ❌ | ❌ |
+
+См. [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
 
 ## Технические особенности
 
-- Написано на чистом Javascript (JSDoc для тайпчекинга), CSS, SQL без сборщиков.
-- Валидация HTML-разметки, БЭМ-нейминга.
-- БЭМ-нейминг классов, без вложенности. Дополнение к методологии:
-  - хелперы с префиксом `_` в названии, подключены в конце;
-  - допускается вложенность тегов не более 2-х;
-  - компоненты, основанные на уникальных тегах, могут не иметь классов.
+- SSR на [site-core](https://github.com/efiand/site-core): inline CSS/JS в одном HTML-файле
+- Игровая логика — `src/client/modules/functions/`
+- БЭМ-нейминг, валидация разметки в integration-тестах

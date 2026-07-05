@@ -3,6 +3,7 @@
 		"biomejs.biome",
 		"editorconfig.editorconfig",
 		"oouo-diogo-perdigao.docthis",
+		"redhat.vscode-yaml",
 		"tobermory.es6-string-html"
 	]
 }

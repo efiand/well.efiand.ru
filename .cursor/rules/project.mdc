@@ -1,0 +1,37 @@
+---
+description: well.efiand.ru — структура проекта и доменная логика
+alwaysApply: true
+---
+
+# well.efiand.ru
+
+Пасьянс «Колодец». Shared-код — [`site-core`](../site-core) (`#core/*`). Конвенция — junction [`.cursor/rules/site-core/`](site-core/) (`code-style-core.mdc`, `workflow-core.mdc`, …); **не дублируй** её в хосте.
+
+## Структура
+
+- `app/common/` — `configure-site.js`; шаблоны игры (`rules`, `sprite`, `table`, `layout`, `error-page`)
+- `app/server/` — `app.js`, `page.js` (inline assets), роуты
+- `src/client/` — `entries/main.js`, `modules/functions/*` (игровая логика), `css/blocks/`, `css/common/`
+- `src/types/` — `game.d.ts`, `global.d.ts` (Telegram WebApp)
+
+## Inline SSR
+
+CSS/JS инлайнятся в HTML (`createRenderInlinePageAssets` + `renderPageAssetsFn` в `createRenderPage`). PostCSS — fallback `site-core/config/postcss.base.js` в `inline-bundle`. Build без `postcss`/`rolldown` в CLI — бандлинг при SSR.
+
+## configure-site
+
+[`app/common/configure-site.js`](app/common/configure-site.js) — `baseHost`, `projectTitle`, `yandexMetrikaId`, `privacyRevisionDate`, `cookieConsent.privacyHref`. `app/server/lib/app.js` — `setSiteConfig({ routes })`.
+
+## Privacy
+
+Политика — inline-блок `#privacy` в [`rules.js`](app/common/templates/rules.js), не отдельный `/privacy`. `registerPrivacyRouteTests` **не используем**.
+
+## site-core
+
+- Зависимость: `"site-core": "github:efiand/site-core#1.5.3"` (локально — `file:../site-core`)
+- `postinstall`: `site-core-postinstall`
+- CLI: `site-core-dev`, `site-core-lint`, `site-core-build-static-pages`
+
+## Деплой
+
+Reusable `host-ci.yml` + GitHub Pages (peaceiris). Opt-out: **`[no-deploy]`**, **`[WIP]`**; skip CI: **`[skip`**.
