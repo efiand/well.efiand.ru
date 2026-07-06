@@ -19,7 +19,9 @@ describe('Templates/Rules', () => {
 		assert.match(RULES_TEMPLATE, /Политика обработки персональных данных/);
 		assert.match(RULES_TEMPLATE, /152-ФЗ/);
 		assert.match(RULES_TEMPLATE, /cookie-баннер/);
-		assert.match(RULES_TEMPLATE, /карту кликов и запись сессий/);
+		assert.match(RULES_TEMPLATE, /базов/i);
+		assert.match(RULES_TEMPLATE, /расширен/i);
+		assert.match(RULES_TEMPLATE, /карт(?:у|а) кликов и запись сессий/);
 		assert.match(RULES_TEMPLATE, /data-cookie-consent-settings/);
 	});
 });

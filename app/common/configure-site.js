@@ -6,7 +6,7 @@ setSiteConfig({
 	cookieConsent: {
 		privacyHref: '/#privacy',
 	},
-	privacyRevisionDate: '2026-05-19',
+	privacyRevisionDate: '2026-07-06',
 	projectDescription: 'Карточная игра для настольных и мобильных браузеров',
 	projectTitle: 'Пасьянс «Колодец»',
 	version: {

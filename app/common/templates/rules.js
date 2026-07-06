@@ -1,4 +1,8 @@
+import { getSiteConfig } from '#core/common/lib/site-config.js';
 import { renderCookieConsentSettingsControl } from '#core/common/templates/cookie-consent-settings-control.js';
+import { renderTimeTag } from '#core/common/templates/time.js';
+
+const privacyRevisionTag = renderTimeTag({ date: getSiteConfig().privacyRevisionDate });
 
 export const RULES_TEMPLATE = /* html */ `
 	<section class="rules">
@@ -35,7 +39,7 @@ export const RULES_TEMPLATE = /* html */ `
 			<div class="rules__privacy" id="privacy">
 				<h2 class="rules__title">Политика обработки персональных данных</h2>
 				<p class="rules__group">
-					<b>Дата публикации:</b> <time datetime="2026-05-19">19.05.2026</time>
+					<b>Дата публикации:</b> ${privacyRevisionTag}
 				</p>
 
 				<h3 class="rules__subtitle">1. Общие положения</h3>
@@ -74,10 +78,13 @@ export const RULES_TEMPLATE = /* html */ `
 					При первом посещении показывается cookie-баннер с кнопками «Принять» и «Отклонить». После выбора в меню игры доступна кнопка «Настройки cookie» для изменения решения.
 				</p>
 				<p class="rules__text">
-					В приложении используется сервис веб-аналитики Яндекс.Метрика. Счётчик подключается <b>только после согласия</b> пользователя в cookie-баннере.
+					Повторное открытие cookie-баннера через «Настройки cookie» не меняет режим работы сервисов веб-аналитики до нового выбора «Принять» или «Отклонить».
 				</p>
 				<p class="rules__text">
-					При согласии Яндекс.Метрика может собирать обезличенные данные о посещениях и взаимодействии с приложением, включая карту кликов и запись сессий (вебвизор).
+					В приложении используется сервис веб-аналитики Яндекс.Метрика. Сервис не блокируется полностью: через примерно 3 секунды после загрузки включается <b>базовая</b> аналитика (просмотры страниц, переходы по ссылкам, показатель отказов) без карты кликов и записи сессий.
+				</p>
+				<p class="rules__text">
+					<b>Расширенный</b> сбор (карта кликов и запись сессий, вебвизор) включается после нажатия «Принять» в cookie-баннере; после «Отклонить» снова применяется базовый режим.
 				</p>
 				<p class="rules__text">
 					Пользователь может отключить cookies в настройках браузера или отклонить их в cookie-баннере.

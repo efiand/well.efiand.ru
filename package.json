@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"site-core": "github:efiand/site-core#1.5.4"
+		"site-core": "github:efiand/site-core#1.6.0"
 	},
 	"imports": {
 		"#client/*": "./src/client/*",

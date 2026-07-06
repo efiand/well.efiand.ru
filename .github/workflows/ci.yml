@@ -8,7 +8,7 @@ on:
 jobs:
   ci:
     if: ${{ !contains(github.event.head_commit.message, '[skip') }}
-    uses: efiand/site-core/.github/workflows/host-ci.yml@1.5.4
+    uses: efiand/site-core/.github/workflows/host-ci.yml@1.6.0
     with:
       test_command: npm test
       artifact_paths: public/
@@ -20,6 +20,6 @@ jobs:
     permissions:
       id-token: write
       pages: write
-    uses: efiand/site-core/.github/workflows/deploy-github-pages.yml@1.5.4
+    uses: efiand/site-core/.github/workflows/deploy-github-pages.yml@1.6.0
     with:
       source_path: public
